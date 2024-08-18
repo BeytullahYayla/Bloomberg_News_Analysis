@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 class BloombergNewDatabase():
-
     def __init__(self,user,password,host,db_name,port) -> None:
         try:
             self.conn = mysql.connector.connect(#start database connectionm- with the provided informations
@@ -40,13 +39,13 @@ class BloombergNewDatabase():
             print("An error occured while getting data by title")
             
          
-    def add_new(self,title:str,description:str,publish_date:str):
-        query = "INSERT INTO NEWS (title,description,publish_date) VALUES (%s, %s, %s)"
+    def add_new(self,title:str,description:str,sentiment_analysis:str,publish_date:str):
+        query = "INSERT INTO NEWS (title,description,sentiment,publish_date) VALUES (%s,%s, %s, %s)"
         try:
             if self.__get_new_by_title(title)!=[]:
                 print("There is an already existing new with this title")
             else:
-                self.cursor.execute(query,(title,description,publish_date))
+                self.cursor.execute(query,(title,description,sentiment_analysis,publish_date))
                 self.conn.commit()
                 print("Data Added Successfully")        
         except:

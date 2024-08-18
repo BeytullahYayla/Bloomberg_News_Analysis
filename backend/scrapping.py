@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import time
 from constants import *
 from bloomberg_database import BloombergNewDatabase
+from gpt_sentiment_classifier import GptSentimentClassifier
+
 
 class NewsScraper:
     """
@@ -16,7 +18,7 @@ class NewsScraper:
         An instance of the BloombergNewDatabase class to store the scraped news data.
     """
 
-    def __init__(self, url: str, database: BloombergNewDatabase):
+    def __init__(self, url: str, database: BloombergNewDatabase,gpt_sentiment_classifier:GptSentimentClassifier):
         """
         Initializes the NewsScraper with the provided URL and database.
 
@@ -29,6 +31,7 @@ class NewsScraper:
         """
         self.url = url
         self.database = database
+        self.classifier=gpt_sentiment_classifier
         
     def __fetch_page(self, url):
         """
@@ -79,15 +82,18 @@ class NewsScraper:
                     description = item.find("span", class_="description").text.strip()
                     date = item.find("span", class_="date").text.strip()
                     full_link = f"https://www.bloomberght.com{link}"
+                    sentiment=str(self.classifier.classify_sentence(description))
                     news_list_data.append({
                         "title": title,
                         "link": full_link,
                         "description": description,
+                        "sentiment_analysis":sentiment,
                         "date": date
                     })
-                    self.database.add_new(title, description, date)
                     
-                    print(f"Title: {title}\nDescription: {description}\nDate:{date}")
+                    self.database.add_new(title, description, sentiment, date)
+                    
+                    print(f"Title: {title}\nDescription: {description}\nSentiment:{sentiment}\nDate:{date}")
                     print()
                     time.sleep(5)
             else:

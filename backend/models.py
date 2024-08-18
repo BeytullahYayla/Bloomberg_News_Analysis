@@ -9,5 +9,5 @@ class NewBase(BaseModel):
     id:UUID
     title:str
     description:str
+    sentiment:str
     publish_date:str
-    
