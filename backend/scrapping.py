@@ -8,44 +8,49 @@ from gpt_sentiment_classifier import GptSentimentClassifier
 
 class NewsScraper:
     """
-    A class used to scrape news articles from a given URL.
+    A class to scrape news data from BloombergHT and store it in a database
+    with sentiment analysis using GPT.
 
     Attributes:
     -----------
     url : str
-        The URL to start scraping from.
+        The URL of the news page to scrape.
     database : BloombergNewDatabase
-        An instance of the BloombergNewDatabase class to store the scraped news data.
+        An instance of the BloombergNewDatabase to store scraped news.
+    classifier : GptSentimentClassifier
+        An instance of GptSentimentClassifier to classify the sentiment of the news.
     """
 
-    def __init__(self, url: str, database: BloombergNewDatabase,gpt_sentiment_classifier:GptSentimentClassifier):
+    def __init__(self, url: str, database: BloombergNewDatabase, gpt_sentiment_classifier: GptSentimentClassifier):
         """
-        Initializes the NewsScraper with the provided URL and database.
+        Initializes the NewsScraper with a URL, database instance, and sentiment classifier.
 
         Parameters:
         -----------
         url : str
-            The URL from which to start scraping.
+            The URL of the news page to scrape.
         database : BloombergNewDatabase
-            An instance of the BloombergNewDatabase class where the news data will be stored.
+            An instance of the BloombergNewDatabase to store scraped news.
+        gpt_sentiment_classifier : GptSentimentClassifier
+            An instance of GptSentimentClassifier to classify the sentiment of the news.
         """
         self.url = url
         self.database = database
-        self.classifier=gpt_sentiment_classifier
+        self.classifier = gpt_sentiment_classifier
         
-    def __fetch_page(self, url):
+    def __fetch_page(self, url: str):
         """
-        Fetches the HTML content of the provided URL.
+        Fetches the HTML content of the given URL.
 
         Parameters:
         -----------
         url : str
-            The URL to fetch the HTML content from.
+            The URL of the page to fetch.
 
         Returns:
         --------
         soup : BeautifulSoup object or None
-            The parsed HTML content as a BeautifulSoup object. Returns None if the request fails.
+            The BeautifulSoup object if the page is successfully fetched; otherwise, None.
         """
         try:
             response = requests.get(url)
@@ -56,19 +61,18 @@ class NewsScraper:
             print(f"Error fetching the URL: {e}")
             return None
         
-    def __get_news_from_page(self, soup):
+    def __get_news_from_page(self, soup: BeautifulSoup):
         """
-        Extracts news data from the HTML content and stores it in the database.
+        Extracts news articles from the page and stores them in the database with sentiment analysis.
 
         Parameters:
         -----------
-        soup : BeautifulSoup object
-            The parsed HTML content from which to extract news data.
+        soup : BeautifulSoup
+            The BeautifulSoup object containing the HTML content of the page.
 
         Returns:
         --------
-        news_list_data : list
-            A list of dictionaries, each containing the title, link, description, and date of a news article.
+        None
         """
         news_div = soup.find("div", class_="widget-news-list type1")
 
@@ -82,14 +86,12 @@ class NewsScraper:
                     date = item.find("span", class_="date").text.strip()
                     full_link = f"https://www.bloomberght.com{link}"
                     
-                    
-                    if self.database.get_new_by_title(title)==[]:#Control if data is already existing in database
-                        
-                        sentiment=str(self.classifier.classify_sentence(description))
+                    if self.database.get_new_by_title(title) == []:  # Control if data is already existing in database
+                        sentiment = str(self.classifier.classify_sentence(description))
                         self.database.add_new(title, description, sentiment, date)
-                        print(f"Title: {title}\nDescription: {description}\nSentiment:{sentiment}\nDate:{date}")
+                        print(f"Title: {title}\nDescription: {description}\nSentiment: {sentiment}\nDate: {date}")
                     else:
-                        print("DAta is already existing in database")
+                        print("Data is already existing in the database")
                     
                     print()
                     time.sleep(5)
@@ -98,20 +100,19 @@ class NewsScraper:
         else:
             print("No div with the specified class found.")
         
-            
-    def __get_next_page_url(self, soup):
+    def __get_next_page_url(self, soup: BeautifulSoup):
         """
-        Extracts the URL of the next page from the HTML content.
+        Extracts the URL of the next page from the current page's pagination section.
 
         Parameters:
         -----------
-        soup : BeautifulSoup object
-            The parsed HTML content from which to extract the next page URL.
+        soup : BeautifulSoup
+            The BeautifulSoup object containing the HTML content of the page.
 
         Returns:
         --------
         full_next_page_url : str or None
-            The full URL of the next page. Returns None if no next page is found.
+            The full URL of the next page if available; otherwise, None.
         """
         page_div = soup.find("div", class_="widget-pager type1")
 
@@ -131,10 +132,8 @@ class NewsScraper:
         
     def run(self):
         """
-        Starts the news scraping process, iterating through pages until no more pages are found.
-
-        The function continuously fetches, processes, and stores news data from the current URL
-        and then moves to the next page if available.
+        Starts the news scraping process. It fetches pages iteratively, extracts news articles,
+        performs sentiment analysis, and stores the results in the database.
 
         Returns:
         --------
