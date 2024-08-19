@@ -27,7 +27,7 @@ class BloombergNewDatabase():
             return record 
         except:
             print("An error occurred while listing data")
-    def __get_new_by_title(self,title:str):
+    def get_new_by_title(self,title:str):
         query="SELECT * FROM NEWS WHERE id = (SELECT id from NEWS WHERE title = %s)"
         try:
             
@@ -42,12 +42,10 @@ class BloombergNewDatabase():
     def add_new(self,title:str,description:str,sentiment_analysis:str,publish_date:str):
         query = "INSERT INTO NEWS (title,description,sentiment,publish_date) VALUES (%s,%s, %s, %s)"
         try:
-            if self.__get_new_by_title(title)!=[]:
-                print("There is an already existing new with this title")
-            else:
-                self.cursor.execute(query,(title,description,sentiment_analysis,publish_date))
-                self.conn.commit()
-                print("Data Added Successfully")        
+            self.cursor.execute(query,(title,description,sentiment_analysis,publish_date))
+            self.conn.commit()
+            print("Data Added Successfully")   
+                     
         except:
             print("An error occured while adding data to database")
         

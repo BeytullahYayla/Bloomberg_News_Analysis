@@ -70,7 +70,6 @@ class NewsScraper:
         news_list_data : list
             A list of dictionaries, each containing the title, link, description, and date of a news article.
         """
-        news_list_data = []
         news_div = soup.find("div", class_="widget-news-list type1")
 
         if news_div:
@@ -82,18 +81,16 @@ class NewsScraper:
                     description = item.find("span", class_="description").text.strip()
                     date = item.find("span", class_="date").text.strip()
                     full_link = f"https://www.bloomberght.com{link}"
-                    sentiment=str(self.classifier.classify_sentence(description))
-                    news_list_data.append({
-                        "title": title,
-                        "link": full_link,
-                        "description": description,
-                        "sentiment_analysis":sentiment,
-                        "date": date
-                    })
                     
-                    self.database.add_new(title, description, sentiment, date)
                     
-                    print(f"Title: {title}\nDescription: {description}\nSentiment:{sentiment}\nDate:{date}")
+                    if self.database.get_new_by_title(title)==[]:#Control if data is already existing in database
+                        
+                        sentiment=str(self.classifier.classify_sentence(description))
+                        self.database.add_new(title, description, sentiment, date)
+                        print(f"Title: {title}\nDescription: {description}\nSentiment:{sentiment}\nDate:{date}")
+                    else:
+                        print("DAta is already existing in database")
+                    
                     print()
                     time.sleep(5)
             else:
@@ -101,7 +98,6 @@ class NewsScraper:
         else:
             print("No div with the specified class found.")
         
-        return news_list_data
             
     def __get_next_page_url(self, soup):
         """
