@@ -1,7 +1,6 @@
 # Bloomberg Economy News Analysis
 
 
-https://github.com/user-attachments/assets/d3ae4e29-d0b9-419c-aca2-827df7958bd5
 
 
 ## 🚩 Contents
@@ -18,6 +17,9 @@ https://github.com/user-attachments/assets/d3ae4e29-d0b9-419c-aca2-827df7958bd5
 
 ## Project Overview
 The project aims to create a system to scrape news articles from a specific website, store them in an SQL database, and ensure that duplicate articles are not stored. Additionally, a simple user interface (UI) should display the collected news, and there's an extra challenge to analyze the news using GPT API. 
+
+https://github.com/user-attachments/assets/d3ae4e29-d0b9-419c-aca2-827df7958bd5
+
 
 ## Technologies Used
 
