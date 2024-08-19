@@ -12,7 +12,7 @@
   * [Database Operations](#database-operations)
   * [Backend Server](#backend-server)
   * [Web User Interface](#web-user-interface)
-- [How To Run on My Local Computer](#how-to-run-on-my-local-computer)
+- [How To Run on Your Local Computer](#how-to-run-on-your-local-computer)
 - [Contact Information](#contact-information)
 
 ## Project Overview
@@ -90,7 +90,7 @@ https://github.com/user-attachments/assets/d3ae4e29-d0b9-419c-aca2-827df7958bd5
   <img src="https://github.com/user-attachments/assets/6ec4b6f6-91c9-4f61-8819-32aa7ecabe8d" width="45%" />
 </p>
 
-## How To Run on My Local Computer
+## How To Run on Your Local Computer
 
 First of all, we are going to create an Anaconda virtual environment in order to manage dependencies effectively.
 
